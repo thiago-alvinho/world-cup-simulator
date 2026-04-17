@@ -1,4 +1,4 @@
-import { getTeams } from "../services/api.js";
+import { getTeams } from "../services/tournament.js";
 
 export async function getAllTeams(req, res) {
     try {
