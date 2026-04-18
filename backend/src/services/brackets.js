@@ -1,6 +1,6 @@
 import { readData, writeData } from '../utils/fileSystem.js';
 
-export async function buildRoundOf16() {
+export async function buildRoundOf16(stage) {
     try {
         const groups = await readData('groups');
         if (!groups) throw new Error("Grupos não encontrados.");
@@ -37,18 +37,40 @@ export async function buildRoundOf16() {
     }
 }
 
-export async function buildRoundOf8() {
+export async function bracketBuilder(stage) {
     try {
-        const round16Results = await readData('round16Results');
+        
+        let matchups = [];
+        let lastStage = '';
+
+        switch(stage) {
+            case 'round8Results':
+                matchups = [
+                    [0, 1], [2, 3],
+                    [4, 5], [6, 7]
+                ]
+                lastStage = 'round16Results'
+                break;
+            case 'round4Results':
+                matchups = [
+                    [0, 1], [2, 3]
+                ]
+                lastStage = 'round8Results'
+                break;
+            case 'final':
+                matchups = [
+                    [0, 1]
+                ]
+                lastStage = 'round4Results';
+                break;
+        }
+        
+        const resultsLastStage = await readData(lastStage);
         const groups = await readData('groups');
-        const roundOf8Matches = [];
+        const matches = [];
 
         const allTeams = groups.flatMap(group => group.teams);
 
-        const matchups = [
-            [0, 1], [2, 3],
-            [4, 5], [6, 7]
-        ]
 
         let teamA = 0;
         let teamB = 0;
@@ -56,18 +78,19 @@ export async function buildRoundOf8() {
         let jogo = 1;
 
         for(const [idxA, idxB] of matchups) {
-            const tokenA = round16Results[idxA].winner;
-            const tokenB = round16Results[idxB].winner;
+            const tokenA = resultsLastStage[idxA].winner;
+            const tokenB = resultsLastStage[idxB].winner;
 
-                
+            // Pegando as informações do time dos grupos pois tem o ranking que será utilizado para simular a partida
             teamA = allTeams.find(team => team.token === tokenA);
             teamB = allTeams.find(team => team.token === tokenB);
 
-            match = { stage: `Quartas - Jogo ${jogo++}`, equipeA: teamA, equipeB: teamB };
-            roundOf8Matches.push(match);
+            match = { stage: `Jogo ${jogo++}`, equipeA: teamA, equipeB: teamB };
+            matches.push(match);
         }
 
-        return roundOf8Matches;
+        console.log(matches);
+        return matches;
 
     } catch (error) {
         console.error(error);

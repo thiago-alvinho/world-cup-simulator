@@ -2,8 +2,8 @@ import teamsAPI from "../config/index.js";
 import { writeData, readData} from '../utils/fileSystem.js'
 import { randomNumber } from "../utils/randomNumber.js";
 import { groupName } from "../utils/groupName.js";
-import { simulateMatch, simulatePenalties } from "./simulator.js";
-import { buildRoundOf16, buildRoundOf8 } from "./brackets.js";
+import { simulateDeathMatch, simulateMatch, simulatePenalties } from "./simulator.js";
+import { buildRoundOf16, bracketBuilder } from "./brackets.js";
 
 export async function getTeams() {
     try {
@@ -119,25 +119,10 @@ export async function playGroupStage() {
 
 async function playDeathMatch() {
     try {
-        const bracketRound16 = await buildRoundOf16();
-        const round16Results = [];
-        
-        for(const match of bracketRound16) {
-            const matchResult = simulateMatch(match.equipeA, match.equipeB, match.stage);
-
-            if(matchResult.winner == null) {
-                const penaltiesResult = simulatePenalties(match.equipeA, match.equipeB);
-                matchResult.golsPenaltyTimeA = penaltiesResult.golsPenaltyTimeA;
-                matchResult.golsPenaltyTimeB = penaltiesResult.golsPenaltyTimeB;
-                matchResult.winner = penaltiesResult.winner;
-            }
-            
-            round16Results.push(matchResult);
-        }
-
-        await writeData('round16Results', round16Results);
-
-
+        await simulateDeathMatch(buildRoundOf16, 'round16Results');
+        await simulateDeathMatch(bracketBuilder, 'round8Results');
+        await simulateDeathMatch(bracketBuilder, 'round4Results');
+        await simulateDeathMatch(bracketBuilder, 'final');
     } catch (error) {
         console.error(error);
     }

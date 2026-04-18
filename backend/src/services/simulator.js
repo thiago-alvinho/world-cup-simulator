@@ -1,4 +1,5 @@
 import { randomNumber } from "../utils/randomNumber.js";
+import { writeData, readData } from "../utils/fileSystem.js";
 
 // Helper function to generate a coherent score based on the result
 function generateScore(result) {
@@ -18,7 +19,7 @@ function generateScore(result) {
 
 // Simulates a single match based on probability (FIFA Points)
 export function simulateMatch(teamA, teamB, stage) {
-    const totalPoints = teamA.ranking + teamB.ranking;
+    const totalPoints = (teamA.ranking || 1400) + (teamB.ranking || 1400);
     
     const drawVal = randomNumber(totalPoints);
 
@@ -59,8 +60,8 @@ export function simulatePenalties(teamA, teamB) {
         winner: null
     };
 
-    const rankingA = teamA.ranking;
-    const rankingB = teamB.ranking;
+    const rankingA = teamA.ranking || 1400;
+    const rankingB = teamB.ranking || 1400;
     const totalPoints = rankingA + rankingB;
 
     let chutesA = 5;
@@ -90,6 +91,7 @@ export function simulatePenalties(teamA, teamB) {
         if (result.golsPenaltyTimeB > result.golsPenaltyTimeA + chutesA) break;
     }
 
+    // Cobranças alternadas: Gol de ouro
     while (result.golsPenaltyTimeA === result.golsPenaltyTimeB) {
         const marcouA = randomNumber(totalPoints) <= rankingA ? 1 : 0;
         const marcouB = randomNumber(totalPoints) <= rankingB ? 1 : 0;
@@ -101,4 +103,30 @@ export function simulatePenalties(teamA, teamB) {
     result.winner = result.golsPenaltyTimeA > result.golsPenaltyTimeB ? teamA.token : teamB.token;
 
     return result;
+}
+
+// Função utilizada para chamar as funções necessárias para montar a partida, simular a partida e o pênalti caso necessário. 
+export async function simulateDeathMatch(bracketBuilder, stage) {
+    try {
+        const bracket = await bracketBuilder(stage);
+            const results = [];
+            
+            for(const match of bracket) {
+                const matchResult = simulateMatch(match.equipeA, match.equipeB, match.stage);
+    
+                if(matchResult.winner == null) {
+                    const penaltiesResult = simulatePenalties(match.equipeA, match.equipeB);
+                    matchResult.golsPenaltyTimeA = penaltiesResult.golsPenaltyTimeA;
+                    matchResult.golsPenaltyTimeB = penaltiesResult.golsPenaltyTimeB;
+                    matchResult.winner = penaltiesResult.winner;
+                }
+                
+                results.push(matchResult);
+            }
+            
+            await writeData(stage, results);
+
+    } catch(error) {
+        console.error(error);
+    }
 }
