@@ -7,14 +7,14 @@ function HeaderTable() {
           align="center" 
           py={3} 
           px={4} 
-          color="#cdc3d4" // on-surface-variant
+          color="#cdc3d4"
           fontFamily="'Space Grotesk', sans-serif" 
           textTransform="uppercase" 
           fontSize="sm" 
           letterSpacing="wider" 
           fontWeight="semibold" 
           borderBottom="1px solid" 
-          borderColor="#4a4452" // outline-variant
+          borderColor="#4a4452"
         >
           <Text flex={1}>Seleção</Text>
           <Text w="24" textAlign="right">Ranking FIFA</Text>

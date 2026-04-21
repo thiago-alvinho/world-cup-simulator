@@ -1,28 +1,30 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 
-export function Title() {
+export function Title({ title, subtitle, align = "center", ...rest }) {
   return (
-
-    <Box textAlign="center" mb={12} mt={12}>
+    <Box textAlign={align} {...rest}>
       <Heading
         as="h1"
         fontFamily="'Space Grotesk', sans-serif"
-        fontSize={{ base: "4xl", md: "5xl" }}
+        fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
         fontWeight="bold"
         letterSpacing="tight"
         color="#fed6fc"
         mb={2}
       >
-        SELEÇÕES CLASSIFICADAS
+        {title}
       </Heading>
       
-      <Text 
-        fontSize="lg" 
-        color="#cdc3d4"
-        fontFamily="'Manrope', sans-serif"
-      >
-        Confira o ranking oficial e prepare-se para o sorteio.
-      </Text>
+      {/* Só renderiza o subtítulo se você passar um */}
+      {subtitle && (
+        <Text 
+          fontSize="lg" 
+          color="#cdc3d4"
+          fontFamily="'Manrope', sans-serif"
+        >
+          {subtitle}
+        </Text>
+      )}
     </Box>
   );
 }

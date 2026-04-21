@@ -1,9 +1,13 @@
 import express from 'express'
-import routes from './routes/index.js'
+import teams from './routes/teams.js'
+import groups from './routes/groups.js'
+import cors from 'cors'
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
-app.use(routes);
+app.use('/teams', teams);
+app.use('/groups', groups);
 
 export default app;

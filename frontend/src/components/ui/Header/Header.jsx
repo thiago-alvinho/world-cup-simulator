@@ -1,4 +1,4 @@
-import { Flex, Box, HStack } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import Logo from "./Logo.jsx";
 import HeaderOptions from "./HeaderOptions.jsx";
 import Socials from "./Socials.jsx";
@@ -13,9 +13,9 @@ function Header() {
       align="center"
       px={6}
       py={4}
-      bg="#220925" // A cor de fundo roxa escura do seu design
+      bg="#220925" 
       boxShadow="xl"
-      display={{ base: "none", md: "flex" }} // Esconde no mobile, como no seu Tailwind
+      display={{ base: "none", md: "flex" }}
       borderBottom="1px solid"
       borderColor="whiteAlpha.100"
     >

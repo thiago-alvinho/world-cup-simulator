@@ -5,24 +5,8 @@ import { groupName } from "../utils/groupName.js";
 import { simulateDeathMatch, simulateMatch, simulatePenalties } from "./simulator.js";
 import { buildRoundOf16, bracketBuilder } from "./brackets.js";
 
-export async function getTeams() {
-    try {
-        const response = await teamsAPI.get('/WorldCup/GetAllTeams');
-        const teams = [...response.data];
-        await writeData('teams', teams);
-
-        await defineGroups(teams);
-        await playGroupStage();
-        await playDeathMatch();
-
-        return response.data;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 // this function select aleatory teams to form the groups
-async function defineGroups(teams) {
+export async function defineGroups(teams) {
 
     let selectedTeams = 0;
     let group = 0;
@@ -57,13 +41,7 @@ async function defineGroups(teams) {
 
     }
 
-    try {
-        await writeData('groups', groups);
-    } catch (error) {
-
-    }
-
-    return 1;
+    return groups;
 
 }
 
