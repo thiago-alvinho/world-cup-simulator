@@ -1,5 +1,5 @@
 import { readData, writeData } from "../utils/fileSystem.js";
-import { defineGroups } from '../services/tournament.js'
+import { defineGroups, playGroupStage } from '../services/tournament.js'
 
 export async function getGroups(req, res) {
     try {
@@ -17,8 +17,28 @@ export async function generateGroups(req, res) {
 
         await writeData('groups', newGroups);
 
-        res.status(201).send(groups);
+        res.status(201).send(newGroups);
 
+    } catch(error) {
+        console.error(error);
+    }
+}
+
+export async function simulateGroupStage(req, res) {
+    try {
+        
+        const finalGroups = await playGroupStage();
+        res.status(200).send(finalGroups);
+
+    } catch(error) {
+        console.error(error);
+    }
+}
+
+export async function resultGroupStage(req, res) {
+    try {
+        const results = await readData('groupStageResults')
+        res.status(200).send(results);
     } catch(error) {
         console.error(error);
     }

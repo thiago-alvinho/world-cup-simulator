@@ -29,7 +29,7 @@ export function GroupCard({ groupName, teams }) {
         <GroupTable teams={teams}/>
         
         {/* BOTÃO DE PARTIDAS (Rodapé do Card) */}
-        <MatchesButton />
+        <MatchesButton groupName={groupName} />
     </Flex>
   );
 }

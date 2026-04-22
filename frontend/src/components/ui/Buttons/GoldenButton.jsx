@@ -1,12 +1,11 @@
 import {Flex, Box} from '@chakra-ui/react'
-import { Link } from 'react-router';
 
-function GoldenButton({text, to}) {
+function GoldenButton({text, onClick}) {
     return (
     <Flex justify="center" mt={12}>
         <Box
-            as={Link}
-            to={to}
+            as='button'
+            onClick={onClick}
             bg="#e9c349"
             color="#3c2f00"
             px={8}

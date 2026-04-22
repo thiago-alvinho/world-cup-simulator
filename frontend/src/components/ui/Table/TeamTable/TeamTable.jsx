@@ -28,7 +28,6 @@ export function TeamTable({ teams }) {
         ))}
 
       </Flex>
-      <GoldenButton text='Formar grupos' to='/groups' />
 
     </Box>
   );

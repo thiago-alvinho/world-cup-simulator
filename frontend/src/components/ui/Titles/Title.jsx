@@ -10,7 +10,7 @@ export function Title({ title, subtitle, align = "center", ...rest }) {
         fontWeight="bold"
         letterSpacing="tight"
         color="#fed6fc"
-        mb={2}
+        mb={6}
       >
         {title}
       </Heading>

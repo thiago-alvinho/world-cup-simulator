@@ -88,7 +88,7 @@ export async function playGroupStage() {
     
         await writeData('groups', groups);
 
-        return groupStageResults;
+        return groups;
 
     } catch (error) {
         console.error("Error simulating group stage:", error);

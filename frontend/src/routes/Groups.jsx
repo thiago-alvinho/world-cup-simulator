@@ -1,28 +1,48 @@
 import { Box } from '@chakra-ui/react'
 import GroupsHero from '@/components/ui/Heroes/GroupsHero';
 import GroupGrid from '@/components/ui/Table/GroupTable/GroupGrid';
-import { getGroups } from '@/services/api';
+import { getGroups, simulateGroupStage } from '@/services/api';
 import { useState, useEffect } from 'react';
 
 function Groups() {
     
     const [groups, setGroups] = useState([]);
+    const [isSimulating, setIsSimulating] = useState(false);
+    
+      
+        
+    const fetchGroups = async () => {
+      try {
+        const dados = await getGroups();
+        setGroups(dados);
+        console.log('\nDados buscados dentro da função fetchGroups:',dados);
+      } catch (error) {
+        console.error(error);
+      }
+
+    }
     
       useEffect(() => {
-        
-        const fetchGroups = async () => {
-          try {
-            const dados = await getGroups();
-            setGroups(dados);
-            console.log(dados);
-          } catch (error) {
-            console.error(error);
-          }
-    
+      fetchGroups();
+    }, []);
+      
+    const handleSimulate = async () => {
+        setIsSimulating(true);
+        try {
+            const finalGroups = await simulateGroupStage();
+            setGroups(finalGroups);
+        } catch (error) {
+            console.log("Erro na simulação");
+        } finally {
+            setIsSimulating(false);
         }
-    
-        fetchGroups();
-      }, []);  
+    }
+
+    const campeonatoIniciado = groups.some(grupo => 
+        grupo.teams.some(team => team.points > 0)
+    );
+
+    console.log(campeonatoIniciado);
     
     return (
         <Box 
@@ -35,7 +55,11 @@ function Groups() {
             flexDirection="column" 
             gap={8}
         >
-            <GroupsHero/>
+            <GroupsHero 
+                onClick={handleSimulate} 
+                text={isSimulating ? 'Playing...' : 'Iniciar campeonato' }
+                campeonatoIniciado={campeonatoIniciado}
+            />
             <GroupGrid groups={groups} />
         </Box>
     )
