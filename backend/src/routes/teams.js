@@ -1,8 +1,9 @@
 import { Router } from 'express'
-import { getTeams } from '../controllers/teamController.js'
+import { getTeams, readTeams } from '../controllers/teamController.js'
 
 const router = Router();
 
-router.get("/", getTeams);
+router.get("/", readTeams);
+router.get("/fetch", getTeams);
 
 export default router;

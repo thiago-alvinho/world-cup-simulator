@@ -1,7 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import TeamRow from "./TeamRow";
 import HeaderTable from "./HeaderTable.jsx";
-import GoldenButton from "../../Buttons/GoldenButton";
 
 export function TeamTable({ teams }) {
   

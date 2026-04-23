@@ -1,0 +1,29 @@
+/* ==========================================
+   BARRA DE ROLAGEM DO CHAVEAMENTO
+========================================== */
+
+/* Suporte para Firefox (que não aceita webkit) */
+.bracket-container {
+    scrollbar-width: auto;
+    scrollbar-color: #462b48 #1c051f; 
+}
+
+/* Suporte para Chrome, Edge e Safari */
+.bracket-container::-webkit-scrollbar {
+    height: 12px; /* Altura da barra horizontal */
+}
+
+.bracket-container::-webkit-scrollbar-track {
+    background: #1c051f;
+    border-radius: 10px;
+}
+
+.bracket-container::-webkit-scrollbar-thumb {
+    background: #462b48;
+    border-radius: 10px;
+    border: 3px solid #1c051f; /* Cria o efeito flutuante */
+}
+
+.bracket-container::-webkit-scrollbar-thumb:hover {
+    background: #d7baff; /* Roxo claro ao passar o mouse */
+}

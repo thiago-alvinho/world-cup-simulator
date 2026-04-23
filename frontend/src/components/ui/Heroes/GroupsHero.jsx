@@ -2,9 +2,22 @@ import { Box, Flex } from "@chakra-ui/react";
 import GoldenButton from '../Buttons/GoldenButton.jsx';
 import Title from "../Titles/Title.jsx";
 import { useNavigate } from "react-router";
+import { generateBracketResults, sendChampion } from "@/services/api.js";
 
-function GroupsHero({onClick, text, campeonatoIniciado}) {
+function GroupsHero({onClick, text, tournamentAlreadyStarted}) {
   const navigate = useNavigate();
+
+  const handleBracket = async () => {
+    try {
+      localStorage.setItem('@worldcup:bracketOk', 'true');
+      await generateBracketResults();
+      await sendChampion();
+      navigate('/bracket');
+    } catch (error) {
+      console.error("There's been an error generating brackets", error);
+      navigate('/error');
+    }
+  }
 
   return (
     <Flex 
@@ -18,7 +31,7 @@ function GroupsHero({onClick, text, campeonatoIniciado}) {
       position="relative" 
       overflow="hidden"
     >
-      {/* Ambient Glow (O efeito de luz roxa de fundo) */}
+      {/* AMBIENT GLOW (BACKGROUND EFFECT) */}
       <Box 
         position="absolute" 
         inset={0} 
@@ -26,41 +39,36 @@ function GroupsHero({onClick, text, campeonatoIniciado}) {
         pointerEvents="none"
       />
 
-      {/* Lado Esquerdo: Textos */}
+      {/* LEFTSIDE: TEXT */}
       <Box zIndex={10}>
         <Title 
-          title="Fase de Grupos"
-          subtitle="As 32 seleções em busca da glória máxima."
+          title="Group stage"
+          subtitle="32 Teams fighting for the eternal glory."
           align="left"
           mb={0} mt={0}
         />
       </Box>
 
-      {/* Lado Direito: Botões de Ação */}
+      {/* RIGHTSIDE: ACTION BUTTON */}
       <Flex direction={{ base: "column", sm: "row" }} gap={4} w={{ base: "full", md: "auto" }} zIndex={10}>
-        
-        {/* Como esse botão vai disparar a API e não navegar, usamos onClick */}
 
-        {campeonatoIniciado ? (
+        {tournamentAlreadyStarted ? (
             
-            // Se já começou, renderiza este botão que apenas navega
+            // If already started, a button just to navigate to /bracket
             <GoldenButton 
-                text="Formar Chaveamento"
-                onClick={() => navigate('/bracket')}
+                text="Define bracket"
+                onClick={handleBracket}
             />
             
         ) : (
             
-            // Se ainda está zerado, renderiza o botão que roda a função
+            // If not started yet, this button will start.
             <GoldenButton 
                 text={text}
                 onClick={onClick} 
             />
             
         )}
-
-        {/* O botão secundário (Escondido por enquanto, como no seu HTML original) */}
-        {/* Usaremos um condicional no futuro para mostrar ele só quando a simulação acabar */}
         
       </Flex>
     </Flex>

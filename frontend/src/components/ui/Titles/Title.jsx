@@ -15,7 +15,7 @@ export function Title({ title, subtitle, align = "center", ...rest }) {
         {title}
       </Heading>
       
-      {/* Só renderiza o subtítulo se você passar um */}
+      {/* Just renderized if a subtitle is passed*/}
       {subtitle && (
         <Text 
           fontSize="lg" 

@@ -1,7 +1,7 @@
 import { Box, Flex, Text, Image } from "@chakra-ui/react";
 
-export function BracketMatch({ match }) {
-    // Se não passarem a partida (ainda não foi definida), renderiza o bloco vazio (TBD)
+export function BracketMatch({ match, isRevealed }) {
+    // IF MATCH IS NULL, TBD IS RENDERIZED
     if (!match) {
         return (
             <Flex direction="column" gap={2} bg="#2b122d" p={3} borderRadius="xl" opacity={0.4} w="220px">
@@ -18,9 +18,24 @@ export function BracketMatch({ match }) {
         );
     }
 
-    // Lógica para descobrir quem venceu (para deixar o perdedor com opacidade menor)
-    const t1Venceu = match.team1.score > match.team2.score;
-    const t2Venceu = match.team2.score > match.team1.score;
+    // VARIABLES USED TO REVEAL RESULTS JUST WHEN THE USER CLICK ON "REVEAL CHAMPION"
+    const scoreA = isRevealed ? match.golsEquipeA : 0;
+    const scoreB = isRevealed ? match.golsEquipeB : 0;
+    
+    const hasPenalties = isRevealed && (match.golsPenaltyTimeA > 0 || match.golsPenaltyTimeB > 0);
+    
+    const teamAWon = isRevealed && match.winner === match.equipeA;
+    const teamBWon = isRevealed && match.winner === match.equipeB;
+
+    const iconTeamA = 
+        match.codeEquipeA 
+        ? `https://flagcdn.com/w80/${match.codeEquipeA}.png` 
+        : `https://ui-avatars.com/api/?name=${match.nomeEquipeA}&background=1c051f&color=fed6fc&bold=true`
+
+    const iconTeamB =
+        match.codeEquipeB
+        ? `https://flagcdn.com/w80/${match.codeEquipeB}.png` 
+        : `https://ui-avatars.com/api/?name=${match.nomeEquipeB}&background=1c051f&color=fed6fc&bold=true`
 
     return (
         <Flex 
@@ -28,37 +43,54 @@ export function BracketMatch({ match }) {
             bg="#3b203d" borderRadius="xl" position="relative" zIndex={10} 
             boxShadow="lg" border="1px solid rgba(215, 186, 255, 0.05)"
         >
-            {/* TIME 1 */}
-            <Flex align="center" justify="space-between" opacity={!t1Venceu && match.status === "Finalizado" ? 0.5 : 1}>
+            {/* TEAM A */}
+            <Flex align="center" justify="space-between" opacity={!teamAWon && isRevealed ? 0.5 : 1}>
                 <Flex align="center" gap={3}>
                     <Box w={6} h={6} borderRadius="md" bg="#1c051f" overflow="hidden">
-                        <Image src={match.team1.logo} alt={match.team1.name} w="full" h="full" objectFit="cover" />
+                        <Image src={iconTeamA} w="full" h="full" objectFit="cover" />
                     </Box>
-                    <Text fontFamily="'Manrope', sans-serif" fontWeight="bold" color="#fed6fc" fontSize="sm">
-                        {match.team1.name}
+                    <Text fontFamily="'Manrope', sans-serif" fontWeight="bold" color="#fed6fc" fontSize="sm" isTruncated maxW="100px">
+                        {match.nomeEquipeA}
                     </Text>
                 </Flex>
-                <Text fontFamily="'Space Grotesk', sans-serif" fontWeight="bold" fontSize="lg" color={t1Venceu ? "#d7baff" : "#cdc3d4"}>
-                    {match.team1.score}
-                </Text>
+                
+                <Flex align="center" gap={2}>
+                    {/* PENALTIES BADGE */}
+                    {hasPenalties && (
+                        <Text fontSize="10px" color={teamAWon ? "#e9c349" : "gray.500"} fontWeight="bold">
+                            ({match.golsPenaltyTimeA})
+                        </Text>
+                    )}
+                    <Text fontFamily="'Space Grotesk', sans-serif" fontWeight="bold" fontSize="lg" color={teamAWon ? "#d7baff" : "#cdc3d4"}>
+                        {scoreA}
+                    </Text>
+                </Flex>
             </Flex>
 
-            {/* Linha Divisória */}
             <Box h="1px" w="full" bg="rgba(150, 142, 157, 0.15)" />
 
-            {/* TIME 2 */}
-            <Flex align="center" justify="space-between" opacity={!t2Venceu && match.status === "Finalizado" ? 0.5 : 1}>
+            {/* TEAM B */}
+            <Flex align="center" justify="space-between" opacity={!teamBWon && isRevealed ? 0.5 : 1}>
                 <Flex align="center" gap={3}>
                     <Box w={6} h={6} borderRadius="md" bg="#1c051f" overflow="hidden">
-                        <Image src={match.team2.logo} alt={match.team2.name} w="full" h="full" objectFit="cover" />
+                        <Image src={iconTeamB} w="full" h="full" objectFit="cover" />
                     </Box>
-                    <Text fontFamily="'Manrope', sans-serif" fontWeight="bold" color="#fed6fc" fontSize="sm">
-                        {match.team2.name}
+                    <Text fontFamily="'Manrope', sans-serif" fontWeight="bold" color="#fed6fc" fontSize="sm" isTruncated maxW="100px">
+                        {match.nomeEquipeB}
                     </Text>
                 </Flex>
-                <Text fontFamily="'Space Grotesk', sans-serif" fontWeight="bold" fontSize="lg" color={t2Venceu ? "#d7baff" : "#cdc3d4"}>
-                    {match.team2.score}
-                </Text>
+                
+                <Flex align="center" gap={2}>
+                    {/* PENALTIES BADGE */}
+                    {hasPenalties && (
+                        <Text fontSize="10px" color={teamBWon ? "#e9c349" : "gray.500"} fontWeight="bold">
+                            ({match.golsPenaltyTimeB})
+                        </Text>
+                    )}
+                    <Text fontFamily="'Space Grotesk', sans-serif" fontWeight="bold" fontSize="lg" color={teamBWon ? "#d7baff" : "#cdc3d4"}>
+                        {scoreB}
+                    </Text>
+                </Flex>
             </Flex>
         </Flex>
     );

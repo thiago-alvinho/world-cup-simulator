@@ -13,11 +13,11 @@ function Groups() {
         
     const fetchGroups = async () => {
       try {
-        const dados = await getGroups();
-        setGroups(dados);
-        console.log('\nDados buscados dentro da função fetchGroups:',dados);
+        const data = await getGroups();
+        setGroups(data);
       } catch (error) {
-        console.error(error);
+        console.error("There's been an error getting groups", error);
+        navigate('/error');
       }
 
     }
@@ -31,18 +31,18 @@ function Groups() {
         try {
             const finalGroups = await simulateGroupStage();
             setGroups(finalGroups);
+            localStorage.setItem('@worldcup:groupStageOk', 'true');
         } catch (error) {
-            console.log("Erro na simulação");
+            console.error("There's been an error simulating group stage", error);
+                navigate('/error');
         } finally {
             setIsSimulating(false);
         }
     }
 
-    const campeonatoIniciado = groups.some(grupo => 
+    const tournamentAlreadyStarted = groups.some(grupo => 
         grupo.teams.some(team => team.points > 0)
     );
-
-    console.log(campeonatoIniciado);
     
     return (
         <Box 
@@ -57,8 +57,8 @@ function Groups() {
         >
             <GroupsHero 
                 onClick={handleSimulate} 
-                text={isSimulating ? 'Playing...' : 'Iniciar campeonato' }
-                campeonatoIniciado={campeonatoIniciado}
+                text={isSimulating ? 'Playing...' : 'Start tournament' }
+                tournamentAlreadyStarted={tournamentAlreadyStarted}
             />
             <GroupGrid groups={groups} />
         </Box>

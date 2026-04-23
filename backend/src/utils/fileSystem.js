@@ -15,7 +15,8 @@ export async function writeData(filename, data) {
     try {
         await fs.writeFile(filePath, JSON.stringify(data));
     } catch (error) {
-        console.error(error);
+        console.error("There's been an error trying to write some file:", error);
+        throw error;
     }
 }
 
@@ -25,6 +26,7 @@ export async function readData(filename) {
         const data = await fs.readFile(filePath);
         return JSON.parse(data);
     } catch (error) {
-        console.error(error);
+        console.error("There's been an error trying to read some file:", error);
+        throw error;
     }
 }

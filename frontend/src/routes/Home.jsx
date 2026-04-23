@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import Title from '../components/ui/Titles/Title.jsx'
 import TeamTable from '../components/ui/Table/TeamTable/TeamTable.jsx';
-import { getTeams, generateGroups } from '../services/api.js';
+import { getTeams, generateGroups, fetchTeamsExternalAPI } from '../services/api.js';
 import GoldenButton from '../components/ui/Buttons/GoldenButton.jsx';
 import { useNavigate } from 'react-router';
+
+let teamsAlreadyFetched = false;
 
 function Home() {
 
@@ -13,10 +15,18 @@ function Home() {
     
     const fetchTeams = async () => {
       try {
-        const dados = await getTeams();
-        setTeams(dados);
+        if(!teamsAlreadyFetched) {
+          const data = await fetchTeamsExternalAPI();
+          setTeams(data);
+          teamsAlreadyFetched = true;
+        } else {
+          const data = await getTeams();
+          setTeams(data);
+        }
+  
       } catch (error) {
-        console.error(error);
+        console.error("There's been an error fetching teams in the external API", error);
+        navigate('/error');
       }
 
     }
@@ -30,6 +40,10 @@ function Home() {
   const handleGenerateGroups = async () => {
     setLoading(true);
     try {
+      localStorage.removeItem('@worldcup:groupStageOk', 'false');
+      localStorage.removeItem('@worldcup:bracketOk', 'false');
+      localStorage.removeItem('@worldcup:championRevealed');
+
       await generateGroups();
       navigate('/groups');
     } catch (error) {
@@ -43,12 +57,12 @@ function Home() {
   return (
     <>
       <Title
-        title='SELEÇÕES CLASSIFICADAS'
-        subtitle='Confira o ranking oficial e prepare-se para o sorteio.'
+        title='QUALIFIED TEAMS'
+        subtitle='Look at the official ranking and be prepared to the tournament'
         mb={12}
         mt={12}
       />
-      <GoldenButton text={loading ? 'Sorteando...' : 'Formar grupos'} onClick={handleGenerateGroups}/>
+      <GoldenButton text={loading ? 'Loading...' : 'Define groups'} onClick={handleGenerateGroups}/>
       <TeamTable teams={teams} />
     </>
   );

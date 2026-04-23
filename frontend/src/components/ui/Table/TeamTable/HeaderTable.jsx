@@ -16,7 +16,7 @@ function HeaderTable() {
           borderBottom="1px solid" 
           borderColor="#4a4452"
         >
-          <Text flex={1}>Seleção</Text>
+          <Text flex={1}>Team</Text>
           <Text w="24" textAlign="right">Ranking FIFA</Text>
         </Flex>
     )

@@ -4,12 +4,13 @@ import { Link, useLocation } from 'react-router';
 function HeaderOptions() {
     const location = useLocation();
     const navItems = [
-        { label: "Equipes", path: "/" },
-        { label: "Grupos", path: "/groups" },
-        { label: "Partidas", path: "/matches/A" },
-        { label: "Chaveamento", path: "/bracket" }
+        { label: "Teams", path: "/" },
+        { label: "Groups", path: "/groups" },
+        { label: "Matches", path: "/matches/A" },
+        { label: "Tournament Bracket", path: "/bracket" }
     ];
 
+    // VARIABLE USED TO GIVE A GOLDEN EFFECT TO THE SELECTED PAGE: TEAMS, GROUPS, MATCHES OR TOURNAMENT BRACKET
     const checkIsActive = (itemPath, currentPath) => {
         if (itemPath === "/") {
             return currentPath === "/";

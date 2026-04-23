@@ -1,6 +1,6 @@
 import { Flex, Box, Text, Image } from "@chakra-ui/react";
 
-export function MatchCard({ date, status, team1, team2 }) {
+export function MatchCard({ stage, status, team1, team2 }) {
     return (
         <Flex
             as="article"
@@ -13,7 +13,6 @@ export function MatchCard({ date, status, team1, team2 }) {
             position="relative"
             overflow="hidden"
         >
-            {/* Ambient Glow interno do card */}
             <Box
                 position="absolute"
                 top="-16"
@@ -26,11 +25,11 @@ export function MatchCard({ date, status, team1, team2 }) {
                 pointerEvents="none"
             />
 
-            {/* Cabeçalho do Card (Data e Status) */}
+            {/* CARD HEADER: STAGE AND STATUS*/}
             <Flex justify="space-between" align="center" zIndex={10}>
                 <Flex align="center" gap={2} color="#cdc3d4" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="widest">
-                    {/*<span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>*/}
-                    <Text>{date}</Text>
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>
+                    <Text>{stage}</Text>
                 </Flex>
                 
                 {/* Badge de "Finalizado" */}
@@ -48,10 +47,10 @@ export function MatchCard({ date, status, team1, team2 }) {
                 </Box>
             </Flex>
 
-            {/* Placar e Times */}
+            {/* TEAMS AND SCORE */}
             <Flex align="center" justify="space-between" zIndex={10}>
                 
-                {/* TIME 1 */}
+                {/* TEAM 1 */}
                 <Flex direction="column" align="center" gap={4} w="33%">
                     <Box 
                         w={{ base: 16, sm: 20 }} h={{ base: 16, sm: 20 }} 
@@ -66,13 +65,13 @@ export function MatchCard({ date, status, team1, team2 }) {
                     </Text>
                 </Flex>
 
-                {/* PLACAR CENTRAL */}
+                {/* SCORE */}
                 <Flex align="center" justify="center" gap={{ base: 4, sm: 8 }} w="33%">
                     <Text fontFamily="'Space Grotesk', sans-serif" fontSize={{ base: "5xl", sm: "6xl" }} fontWeight="bold" color="#e9c349" textShadow="0 0 15px rgba(233,195,73,0.3)">
                         {team1.score}
                     </Text>
                     
-                    {/* Tracinho do meio */}
+                    {/* MARK BETWEEN SCORES */}
                     <Box h="1" w={{ base: 4, sm: 8 }} bg="rgba(74, 68, 82, 0.3)" borderRadius="full" />
                     
                     <Text fontFamily="'Space Grotesk', sans-serif" fontSize={{ base: "5xl", sm: "6xl" }} fontWeight="bold" color="#e9c349" textShadow="0 0 15px rgba(233,195,73,0.3)">
@@ -80,7 +79,7 @@ export function MatchCard({ date, status, team1, team2 }) {
                     </Text>
                 </Flex>
 
-                {/* TIME 2 */}
+                {/* TEAM 2 */}
                 <Flex direction="column" align="center" gap={4} w="33%">
                     <Box 
                         w={{ base: 16, sm: 20 }} h={{ base: 16, sm: 20 }} 

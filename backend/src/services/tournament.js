@@ -7,41 +7,44 @@ import { buildRoundOf16, bracketBuilder } from "./brackets.js";
 
 // this function select aleatory teams to form the groups
 export async function defineGroups(teams) {
+    try {
+        let selectedTeams = 0;
+        let group = 0;
+        let teamsInGroup = 0;
+        let randomTeam = 0;
+        let team = 0
+        let groupNumber = 0;
+        let groups = [];
+        
+        const ranking = await readData('ranking');
 
-    let selectedTeams = 0;
-    let group = 0;
-    let teamsInGroup = 0;
-    let randomTeam = 0;
-    let team = 0
-    let groupNumber = 0;
-    let groups = [];
-    
-    const ranking = await readData('ranking');
+        while(selectedTeams < 32) {
+                
+            group = { name: groupName(groupNumber), teams: [] };
 
-    while(selectedTeams < 32) {
-            
-        group = { name: groupName(groupNumber), teams: [] };
+            while(teamsInGroup < 4) {
+                randomTeam = randomNumber(32 - selectedTeams);
+                team = teams[randomTeam];
+                team.points = 0; // Inicialization of variables
+                team.goalDifference = 0; // Inicialization of variables
+                teams.splice(randomTeam, 1);
+                group.teams.push(team);
+                selectedTeams++;
+                teamsInGroup++;
+            }
 
-        while(teamsInGroup < 4) {
-            randomTeam = randomNumber(32 - selectedTeams);
-            team = teams[randomTeam];
-            team.points = 0; // Inicialization of variables
-            team.goalDifference = 0; // Inicialization of variables
-            // If the team is not in the ranking, It'll get a default value
-            team.ranking = ranking[team.nome] || 1400;
-            teams.splice(randomTeam, 1);
-            group.teams.push(team);
-            selectedTeams++;
-            teamsInGroup++;
+            groupNumber++;
+            groups.push(group);
+            teamsInGroup = 0;
+
         }
 
-        groupNumber++;
-        groups.push(group);
-        teamsInGroup = 0;
-
+        return groups;
+    } catch (error) {
+        console.error("There's been an error trying to define the groups:", error);
+        throw error;
     }
-
-    return groups;
+    
 
 }
 
@@ -82,6 +85,12 @@ export async function playGroupStage() {
                 }
 
             }
+
+            group.teams.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points; // More points
+                if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference; // More goals
+                return Math.random() - 0.5; // Total draw -> random selection
+            });
         }
 
         await writeData('groupStageResults', groupStageResults);
@@ -91,18 +100,26 @@ export async function playGroupStage() {
         return groups;
 
     } catch (error) {
-        console.error("Error simulating group stage:", error);
+        console.error("There's been an error playing the group stage:", error);
+        throw error;
     }
 }
 
-async function playDeathMatch() {
+export async function playDeathMatch() {
+    let bracketResults = {};
+    
     try {
-        await simulateDeathMatch(buildRoundOf16, 'round16Results');
-        await simulateDeathMatch(bracketBuilder, 'round8Results');
-        await simulateDeathMatch(bracketBuilder, 'round4Results');
-        await simulateDeathMatch(bracketBuilder, 'final');
+        
+        bracketResults.roundOf16 = await simulateDeathMatch(buildRoundOf16, 'round16Results');
+        bracketResults.quarterFinals = await simulateDeathMatch(bracketBuilder, 'round8Results');
+        bracketResults.semiFinals = await simulateDeathMatch(bracketBuilder, 'round4Results');
+        bracketResults.finalMatch = await simulateDeathMatch(bracketBuilder, 'final');
+
+        await writeData('bracketResults', bracketResults);
+        return bracketResults;
     } catch (error) {
-        console.error(error);
+        console.error("There's been an error playing the death match:", error);
+        throw error;
     }
 }
 

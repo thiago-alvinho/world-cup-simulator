@@ -14,21 +14,21 @@ export function GroupCard({ groupName, teams }) {
         boxShadow="0 8px 32px rgba(28,5,31,0.4)"
         position="relative"
     >
-        {/* HEADER DO GRUPO */}
+        {/* GROUP HEADER */}
         <Flex justify="space-between" align="center" pb={2} borderBottom="1px solid" borderColor="#4a4452">
         <Heading fontFamily="'Space Grotesk', sans-serif" fontSize="xl" fontWeight="bold" color="#fed6fc">
             {groupName}
         </Heading>
-        {/* Ícone da Bola */}
+        {/* BALL ICON */}
         <Box color="#d7baff" opacity={0.5}>
-            {/*<span className="material-symbols-outlined text-3xl">sports_soccer</span>*/}
+        <span className="material-symbols-outlined text-3xl">sports_soccer</span>
         </Box>
         </Flex>
 
-        {/* LISTA DE TIMES */}
+        {/* TEAMS LIST*/}
         <GroupTable teams={teams}/>
         
-        {/* BOTÃO DE PARTIDAS (Rodapé do Card) */}
+        {/* MATCHES BUTTON */}
         <MatchesButton groupName={groupName} />
     </Flex>
   );

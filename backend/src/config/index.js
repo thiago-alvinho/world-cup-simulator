@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const teamsAPI = axios.create({
-    baseURL: process.env.API_URL_BASE,
+    baseURL: 'https://development-internship-api.geopostenergy.com',
     headers: {
         'git-user': 'thiago-alvinho'
     }

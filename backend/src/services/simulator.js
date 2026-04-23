@@ -45,6 +45,8 @@ export function simulateMatch(teamA, teamB, stage) {
         equipeB: teamB.token,
         nomeEquipeA: teamA.nome,
         nomeEquipeB: teamB.nome,
+        codeEquipeA: teamA.code,
+        codeEquipeB: teamB.code,
         golsEquipeA: goalsA,
         golsEquipeB: goalsB,
         golsPenaltyTimeA: 0,
@@ -67,7 +69,7 @@ export function simulatePenalties(teamA, teamB) {
     let chutesA = 5;
     let chutesB = 5;
 
-    // Cobranças regulamentares
+    // Regular penalties
     while (chutesA > 0 || chutesB > 0) {
         
         if (chutesA > 0) {
@@ -91,7 +93,7 @@ export function simulatePenalties(teamA, teamB) {
         if (result.golsPenaltyTimeB > result.golsPenaltyTimeA + chutesA) break;
     }
 
-    // Cobranças alternadas: Gol de ouro
+    // 1 goal -> win
     while (result.golsPenaltyTimeA === result.golsPenaltyTimeB) {
         const marcouA = randomNumber(totalPoints) <= rankingA ? 1 : 0;
         const marcouB = randomNumber(totalPoints) <= rankingB ? 1 : 0;
@@ -105,28 +107,30 @@ export function simulatePenalties(teamA, teamB) {
     return result;
 }
 
-// Função utilizada para chamar as funções necessárias para montar a partida, simular a partida e o pênalti caso necessário. 
 export async function simulateDeathMatch(bracketBuilder, stage) {
     try {
         const bracket = await bracketBuilder(stage);
-            const results = [];
+        const results = [];
             
-            for(const match of bracket) {
-                const matchResult = simulateMatch(match.equipeA, match.equipeB, match.stage);
-    
-                if(matchResult.winner == null) {
-                    const penaltiesResult = simulatePenalties(match.equipeA, match.equipeB);
-                    matchResult.golsPenaltyTimeA = penaltiesResult.golsPenaltyTimeA;
-                    matchResult.golsPenaltyTimeB = penaltiesResult.golsPenaltyTimeB;
-                    matchResult.winner = penaltiesResult.winner;
-                }
-                
-                results.push(matchResult);
+        for(const match of bracket) {
+            const matchResult = simulateMatch(match.equipeA, match.equipeB, match.stage);
+
+            // There was a draw
+            if(matchResult.winner == null) {
+                const penaltiesResult = simulatePenalties(match.equipeA, match.equipeB);
+                matchResult.golsPenaltyTimeA = penaltiesResult.golsPenaltyTimeA;
+                matchResult.golsPenaltyTimeB = penaltiesResult.golsPenaltyTimeB;
+                matchResult.winner = penaltiesResult.winner;
             }
             
-            await writeData(stage, results);
+            results.push(matchResult);
+        }
+            
+        await writeData(stage, results);
+        return results;
 
     } catch(error) {
-        console.error(error);
+        console.error("There's been an error simulating a death match:", error);
+        throw error;
     }
 }

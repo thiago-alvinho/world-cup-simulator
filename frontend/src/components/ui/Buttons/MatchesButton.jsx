@@ -1,18 +1,18 @@
 import { Box } from "@chakra-ui/react";
-import { useNavigate } from "react-router"; // <-- Importamos o navegador
+import { useNavigate } from "react-router"; 
 
 function MatchesButton({ groupName }) {
     const navigate = useNavigate();
 
-    const handleVerPartidas = () => {
-        const letraDoGrupo = groupName.replace("Group ", "");
-        navigate(`/matches/${letraDoGrupo}`);
+    const handleSeeMatches = () => {
+        const groupLetter = groupName.replace("Group ", "");
+        navigate(`/matches/${groupLetter}`);
     };
 
     return (
         <Box
             as="button"
-            onClick={handleVerPartidas}
+            onClick={handleSeeMatches}
             mt={2} w="full"
             bg="rgba(70,43,72,0.4)"
             _hover={{ bg: "rgba(70,43,72,0.6)" }}
@@ -29,8 +29,8 @@ function MatchesButton({ groupName }) {
             gap={2}
             backdropFilter="blur(8px)"
         >
-            {/*<span className="material-symbols-outlined" style={{ fontSize: '18px' }}>calendar_month</span>*/}
-            Partidas
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>calendar_month</span>
+            Matches
         </Box>
     )
 }

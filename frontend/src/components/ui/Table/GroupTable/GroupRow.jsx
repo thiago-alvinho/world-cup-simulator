@@ -1,14 +1,13 @@
 import { Flex, Text } from '@chakra-ui/react'
 
 function GroupRow({team, index}) {
-    // O 1º time (cabeça de chave) tem um estilo dourado diferente no seu design
+    // variable used to give a different layout to the number one of the group
     const isSeed1 = index === 0;
     
     return (
         <Flex justify="space-between" align="center" bg="#2b122d" p={2} borderRadius="lg">
             <Flex align="center" gap={3}>
             
-            {/* Quadrado numérico do Pote (1, 2, 3, 4) */}
             <Flex
                 w="6" h="6"
                 borderRadius="md"

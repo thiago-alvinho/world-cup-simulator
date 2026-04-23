@@ -12,21 +12,23 @@ function Matches() {
     
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
+    const groupStageOk = localStorage.getItem('@worldcup:groupStageOk') === 'true';
 
     useEffect(() => {
         const fetchAndFilterMatches = async () => {
             setLoading(true);
             try {
 
-                const todasAsPartidas = await getGroupStageResults();
+                const allMatches = await getGroupStageResults();
 
-                const partidasDoGrupo = todasAsPartidas.filter(
+                const groupMatches = allMatches.filter(
                     (partida) => partida.stage === `Group ${groupID}`
                 );
 
-                setMatches(partidasDoGrupo);
+                setMatches(groupMatches);
             } catch (error) {
-                console.log("Erro ao carregar as partidas:", error);
+                console.error("There's been an error getting group stage results", error);
+                navigate('/error');
             } finally {
                 setLoading(false);
             }
@@ -40,43 +42,60 @@ function Matches() {
             
             <Flex direction="column" gap={6}>
                 <GlassButton 
-                    text="VOLTAR PARA GRUPOS" 
+                    text="RETURN TO GROUPS" 
                     onClick={() => navigate('/groups')}
                     alignSelf="flex-start" 
                 />
 
                 <Box position="relative">
                     <Box position="absolute" left="-10" top="0" w="32" h="32" bg="rgba(215, 186, 255, 0.2)" borderRadius="full" filter="blur(40px)" zIndex="-1"/>
-                    <Title title={`GRUPO ${groupID}`} subtitle="Fase de Grupos • Partidas" align="left" />
+                    <Title title={`GROUP ${groupID}`} subtitle="Group stage • Matches" align="left" />
                 </Box>
             </Flex>
 
             {/* SEÇÃO 2: LISTA DE PARTIDAS */}
             <Flex direction="column" gap={6}>
 
-                {/* Se estiver carregando, mostra o spinner. Se não, desenha os cards */}
-                {loading ? (
+                {/* if loading, a spinning is showed */}
+                {!groupStageOk ? (
+                    <Flex direction="column" align="center" justify="center" py={12} gap={4} opacity={0.6}>
+                        <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#cdc3d4' }}>
+                            calendar_clock
+                        </span>
+                        <Text color="#cdc3d4" fontSize="lg" fontFamily="'Space Grotesk', sans-serif">
+                            The matches not started yet.
+                        </Text>
+                    </Flex>
+                )
+                
+                : loading ? (
                     <Flex justify="center" py={12}>
                         <Spinner color="#e9c349" size="xl" />
                     </Flex>
                 ) : matches.length === 0 ? (
-                    <Text color="#cdc3d4" textAlign="center">Nenhuma partida encontrada para este grupo.</Text>
+                    <Text color="#cdc3d4" textAlign="center">There's no matches to this group.</Text>
                 ) : (
                     matches.map((match) => (
                         <MatchCard 
                             key={`${match.equipeA}-${match.equipeB}`}
-                            date="Fase de Grupos" 
-                            status="Finalizado"
+                            stage="Group stage" 
+                            status="Finished"
                             
                             team1={{ 
                                 name: match.nomeEquipeA, 
                                 score: match.golsEquipeA, 
-                                logo: `https://ui-avatars.com/api/?name=${match.nomeEquipeA}&background=1c051f&color=fed6fc&bold=true` 
+                                logo:
+                                    match.codeEquipeA 
+                                    ? `https://flagcdn.com/w80/${match.codeEquipeA}.png` 
+                                    : `https://ui-avatars.com/api/?name=${match.nomeEquipeA}&background=1c051f&color=fed6fc&bold=true` 
                             }}
                             team2={{ 
                                 name: match.nomeEquipeB, 
                                 score: match.golsEquipeB, 
-                                logo: `https://ui-avatars.com/api/?name=${match.nomeEquipeB}&background=1c051f&color=fed6fc&bold=true` 
+                                logo: 
+                                    match.codeEquipeB
+                                    ? `https://flagcdn.com/w80/${match.codeEquipeB}.png` 
+                                    : `https://ui-avatars.com/api/?name=${match.nomeEquipeB}&background=1c051f&color=fed6fc&bold=true` 
                             }}
                         />
                     ))

@@ -1,7 +1,6 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Flex, Box, Text, Image } from "@chakra-ui/react";
 
 export function TeamRow({ team, index }) {
-  // Se o index for par (0, 2, 4), usamos a cor mais clara. Se for ímpar, fica transparente.
   const isEven = index % 2 === 0;
 
   return (
@@ -15,22 +14,26 @@ export function TeamRow({ team, index }) {
       transition="all 0.2s"
       _hover={{ bg: "#462b48" }}
     >
-      {/* Inicial e Nome */}
+      {/* FLAG AND NAME */}
       <Flex align="center" gap={4} flex={1}>
-        
-        {/*Um círculo com a inicial do país */}
         <Box 
           w="8" h="8" 
           borderRadius="full" 
-          bg="purple.600" 
-          color="white"
-          display="flex" 
-          alignItems="center" 
-          justifyContent="center" 
-          fontWeight="bold"
+          overflow="hidden"
+          bg="#1c051f" 
           shadow="sm"
+          flexShrink={0}
         >
-          {team.nome.charAt(0)}
+          <Image 
+            src={team.code 
+              ? `https://flagcdn.com/w80/${team.code}.png` 
+              : `https://ui-avatars.com/api/?name=${team.nome}&background=1c051f&color=fed6fc&bold=true`
+            } 
+            alt={`Bandeira de ${team.nome}`} 
+            w="full" 
+            h="full" 
+            objectFit="cover"
+          />
         </Box>
         
         <Text fontWeight="bold" fontSize="lg" color="white">
@@ -38,7 +41,7 @@ export function TeamRow({ team, index }) {
         </Text>
       </Flex>
 
-      {/* Lado Direito: Ranking */}
+      {/* Ranking */}
       <Box w="24" textAlign="right">
         <Text 
           fontFamily="'Space Grotesk', sans-serif" 
